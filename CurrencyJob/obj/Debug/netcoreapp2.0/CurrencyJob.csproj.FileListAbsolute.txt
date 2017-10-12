@@ -1,0 +1,11 @@
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\bin\Debug\netcoreapp2.0\CurrencyJob.deps.json
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\bin\Debug\netcoreapp2.0\CurrencyJob.runtimeconfig.json
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\bin\Debug\netcoreapp2.0\CurrencyJob.runtimeconfig.dev.json
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\bin\Debug\netcoreapp2.0\CurrencyJob.dll
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\bin\Debug\netcoreapp2.0\CurrencyJob.pdb
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\obj\Debug\netcoreapp2.0\CurrencyJob.csprojResolveAssemblyReference.cache
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\obj\Debug\netcoreapp2.0\CurrencyJob.csproj.CoreCompileInputs.cache
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\obj\Debug\netcoreapp2.0\CurrencyJob.AssemblyInfoInputs.cache
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\obj\Debug\netcoreapp2.0\CurrencyJob.AssemblyInfo.cs
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\obj\Debug\netcoreapp2.0\CurrencyJob.dll
+C:\ProgProj\CurrencyJob\CurrencyJob\CurrencyJob\obj\Debug\netcoreapp2.0\CurrencyJob.pdb
