@@ -14,8 +14,7 @@ namespace CurrencyJob
     {
 
         private static string BaseURL = "https://openexchangerates.org/api/latest.json";
-        private static string UrlParameter = "?app_id=";
-        private static string ConnectionString = "";
+        
 
         static void Main(string[] args)
         {
@@ -62,6 +61,12 @@ namespace CurrencyJob
 
             int CurrencyId;
             double OldPrice;
+            Dictionary<int, double> CurrencyPriceDict = new Dictionary<int, double>();
+
+            var dt = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            dt = dt.AddSeconds(CurrencyPrices.timestamp);
+
+            var Date = dt.ToString("yyyy-MM-dd H:mm:ss");
 
             SqlConnection Conn = new SqlConnection(ConnectionString);
 
@@ -74,34 +79,57 @@ namespace CurrencyJob
                 command.CommandText = "SELECT top 168 * FROM CurrencyPrice ORDER BY Timestamp DESC;";
                 SqlDataReader Reader = await command.ExecuteReaderAsync();
 
+                
 
+                
 
                 while (Reader.Read())
                 {
-
-                    //need to make sure this doesnt run more than once an hour
-
-                    CurrencyId = int.Parse(Reader.GetValue(2).ToString());
-                    OldPrice = double.Parse(Reader.GetValue(3).ToString());
-
-                    CurrencyMapper.TryGetValue(CurrencyId, out string CurrencyCode);
-
-                    CurrencyPrices.rates.TryGetValue(CurrencyCode, out double NewPrice); 
-
-                    var Change = Math.Round(((((1 / NewPrice) - OldPrice) / OldPrice) * 100), 2);
-
-                    Console.WriteLine("CurrencyID: " + CurrencyId);
-                    Console.WriteLine("OldPrice: "+OldPrice);
-                    Console.WriteLine("NewPrice: "+NewPrice);
-                    Console.WriteLine("Change: "+Change);
-
-                    Console.WriteLine("INSERT INTO CurrencyPriceData VALUES(" + Change + ","
-                        + CurrencyId + ","
-                        + NewPrice + ","
-                        + CurrencyPrices.timestamp+")");
-
+                    CurrencyPriceDict.Add(int.Parse(Reader.GetValue(2).ToString()),double.Parse(Reader.GetValue(3).ToString()));
                 }
+
+                Reader.Close();
             }
+
+            foreach (var entry in CurrencyPriceDict)
+            {
+                //need to make sure this doesnt run more than once an hour
+
+                CurrencyId = entry.Key;
+                OldPrice = entry.Value;
+
+                CurrencyMapper.TryGetValue(CurrencyId, out string CurrencyCode);
+
+                CurrencyPrices.rates.TryGetValue(CurrencyCode, out double NewPrice);
+
+                NewPrice = 1 / NewPrice;
+
+                var Change = Math.Round((((( NewPrice) - OldPrice) / OldPrice) * 100), 2);
+
+                Console.WriteLine("CurrencyID: " + CurrencyId);
+                Console.WriteLine("OldPrice: " + OldPrice);
+                Console.WriteLine("NewPrice: " + NewPrice);
+                Console.WriteLine("Change: " + Change);
+
+                Console.WriteLine("INSERT INTO CurrencyPrice VALUES(" + Change + ","
+                    + 999 + ","
+                    + (NewPrice) + ","
+                    + dt + ")");
+
+                string CommandText = "INSERT INTO CurrencyPrice VALUES(" + Change + ", "
+                    + CurrencyId + ","
+                    + NewPrice + ","
+                    + "@1)";
+
+                var command = Conn.CreateCommand();
+                command.Parameters.AddWithValue("@1",dt);
+
+                command.CommandText = CommandText;
+
+                SqlDataReader Reader = await command.ExecuteReaderAsync();
+                Reader.Close();
+            }
+
             return null;
         }
 
