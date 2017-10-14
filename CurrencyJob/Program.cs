@@ -14,6 +14,7 @@ namespace CurrencyJob
         private static string BaseURL = "https://openexchangerates.org/api/latest.json";
         
 
+
         static void Main(string[] args)
         {
             var CurrencyMapper = GetCurrencyMapper();
@@ -83,13 +84,13 @@ namespace CurrencyJob
                 {
 
                     string LastTimestamp = Reader.GetValue(4).ToString();
-                   /* Console.WriteLine("Day: " + LastTimestamp.Split('/')[0]);
-                    Console.WriteLine("Month: "+ LastTimestamp.Split('/')[1]);
+                   Console.WriteLine("Month: " + LastTimestamp.Split('/')[0]);
+                    Console.WriteLine("Day: "+ LastTimestamp.Split('/')[1]);
                     Console.WriteLine("Year: " + LastTimestamp.Split(' ')[0].Split('/')[2]);
-                    Console.WriteLine("Hour: " + LastTimestamp.Split(' ')[1].Split(':')[0]);*/
+                    Console.WriteLine("Hour: " + LastTimestamp.Split(' ')[1].Split(':')[0]);
 
-                    int Day = int.Parse(LastTimestamp.Split('/')[0]);
-                    int Month = int.Parse(LastTimestamp.Split('/')[1]);
+                    int Month = int.Parse(LastTimestamp.Split('/')[0]);
+                    int Day = int.Parse(LastTimestamp.Split('/')[1]);
                     int Year = int.Parse(LastTimestamp.Split(' ')[0].Split('/')[2]);
                     int Hour = int.Parse(LastTimestamp.Split(' ')[1].Split(':')[0]);
 
@@ -100,12 +101,12 @@ namespace CurrencyJob
 
                     if (!Checked&&LastTime.AddHours(1)>dt.AddMinutes(10))
                     {
-                        Console.WriteLine("Already ran job within the last hour");
+                        Console.WriteLine("Already ran job within the last hour, last job was run at: " + LastTime.ToString());
                         return null;
                     }
                     else if (!Checked)
                     {
-                        Console.WriteLine("Job is good to run, last run at" + LastTime.ToString());
+                        Console.WriteLine("Job is good to run, last run at: " + LastTime.ToString());
                     }
                     Checked = true;
 
@@ -334,5 +335,21 @@ namespace CurrencyJob
 
             return dictionary;
         }
+    }
+    public class CurrencyPrice
+    {
+        public int CurrencyPriceId { get; set; }
+        public int CurrencyId { get; set; }
+        public double Price { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public double ChangePercentage { get; set; }
+    }
+    public class CurrencyPriceData
+    {
+        public string disclaimer { get; set; }
+        public string license { get; set; }
+        public int timestamp { get; set; }
+        public string Base { get; set; }
+        public Dictionary<string, double> rates { get; set; }
     }
 }
