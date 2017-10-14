@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -46,6 +44,7 @@ namespace CurrencyJob
             if (Response.IsSuccessStatusCode)
             {
                 RawJson = Response.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("API call successful");
             }
             else
             {
@@ -58,7 +57,7 @@ namespace CurrencyJob
 
         public static async Task<string> RunDbQuery(CurrencyPriceData CurrencyPrices,Dictionary<int,string> CurrencyMapper)
         {
-
+            bool Checked = false;
             int CurrencyId;
             double OldPrice;
             Dictionary<int, double> CurrencyPriceDict = new Dictionary<int, double>();
@@ -80,11 +79,36 @@ namespace CurrencyJob
                 SqlDataReader Reader = await command.ExecuteReaderAsync();
 
                 
-
-                
-
                 while (Reader.Read())
                 {
+
+                    string LastTimestamp = Reader.GetValue(4).ToString();
+                   /* Console.WriteLine("Day: " + LastTimestamp.Split('/')[0]);
+                    Console.WriteLine("Month: "+ LastTimestamp.Split('/')[1]);
+                    Console.WriteLine("Year: " + LastTimestamp.Split(' ')[0].Split('/')[2]);
+                    Console.WriteLine("Hour: " + LastTimestamp.Split(' ')[1].Split(':')[0]);*/
+
+                    int Day = int.Parse(LastTimestamp.Split('/')[0]);
+                    int Month = int.Parse(LastTimestamp.Split('/')[1]);
+                    int Year = int.Parse(LastTimestamp.Split(' ')[0].Split('/')[2]);
+                    int Hour = int.Parse(LastTimestamp.Split(' ')[1].Split(':')[0]);
+
+                    DateTime LastTime = new DateTime(Year,Month,Day);
+                    LastTime.AddHours(Hour);
+
+                    Console.WriteLine(LastTime.ToString());
+
+                    if (!Checked&&LastTime.AddHours(1)>dt.AddMinutes(10))
+                    {
+                        Console.WriteLine("Already ran job within the last hour");
+                        return null;
+                    }
+                    else if (!Checked)
+                    {
+                        Console.WriteLine("Job is good to run, last run at" + LastTime.ToString());
+                    }
+                    Checked = true;
+
                     CurrencyPriceDict.Add(int.Parse(Reader.GetValue(2).ToString()),double.Parse(Reader.GetValue(3).ToString()));
                 }
 
